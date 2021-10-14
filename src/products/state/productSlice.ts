@@ -1,0 +1,42 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ICategory } from '~/types/categories';
+import { Media } from '~/types/image';
+import { RootState } from '../../app/store';
+
+interface ProductState{
+    image: Media | null
+    media: Media[]
+    category: ICategory | null | undefined
+}
+
+const initialState: ProductState = {
+    image: null,
+    media: [],
+    category: null
+}
+
+export const productSlice = createSlice({
+    name: 'product',
+    initialState,
+    reducers: {
+        setImage: (state, action: PayloadAction<Media | null>) => {
+            state.image = action.payload
+        },
+        setMedia: (state, action: PayloadAction<Media[]>) => {
+            state.media = action.payload
+        },
+        addMedia: (state, action: PayloadAction<Media[]>) => {
+            state.media = state.media.concat(action.payload)
+        },
+        deleteMedia: (state, action: PayloadAction<string>) => {
+            state.media = state.media.filter(file => file._id !== action.payload)
+        },
+        selectCategory: (state, action: PayloadAction<ICategory | undefined>) => {
+            state.category = action.payload
+        },
+        clearProduct: () => initialState
+    },
+})
+
+export const {setImage, setMedia, addMedia, deleteMedia, selectCategory, clearProduct} = productSlice.actions
+export default productSlice.reducer;
