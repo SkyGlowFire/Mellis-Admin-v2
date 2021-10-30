@@ -7,7 +7,7 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles(() => ({
   root: {
     position: 'fixed',
-    top: 60,
+    top: 80,
     width: '100%',
     zIndex: 100,
   },

@@ -60,18 +60,17 @@ export const mainSlice = createSlice({
             console.log('action ', action)
             const {payload} = action
             state.loading = false;
-            if(payload?.data){
-                if(payload?.status === 500){
+            if(payload){
+                if(payload.status === 500){
                     state.error = {message: 'Internal server error', status: 500}
-                } else {
+                } else if(payload.data){
                     state.error = {message: payload.data.message, status: payload.status}
+                } else {
+                    state.error = {message: payload?.message, status: payload.status}
                 }
-            } else {
-                if(action.error.name !== "ConditionError"){
-                    state.error = {message: action.error?.message || 'Server does not respond'}
-                }
-            }
-            
+            } else if(action.error?.name !== 'ConditionError'){
+                state.error = {message: 'server does not response'}
+            }   
         })
     }
 })
