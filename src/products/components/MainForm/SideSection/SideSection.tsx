@@ -86,7 +86,7 @@ const SideSection: FC<SideSectionProps> = ({
             className={classes.input}
             name="price"
             startIcon={<span>$</span>}
-            InputProps={{ inputProps: { min: 0 } }}
+            InputProps={{ inputProps: { min: 0, step: '0.01' } }}
           />
           <Typography gutterBottom>"Compare to" Price</Typography>
           <TextInputWithIcon
@@ -96,7 +96,7 @@ const SideSection: FC<SideSectionProps> = ({
             className={classes.input}
             name="comparePrice"
             startIcon={<span>$</span>}
-            InputProps={{ inputProps: { min: 0 } }}
+            InputProps={{ inputProps: { min: 0, step: '0.01' } }}
           />
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
@@ -119,11 +119,6 @@ const SideSection: FC<SideSectionProps> = ({
                 type="number"
                 variant="outlined"
                 size="small"
-                // startIcon={
-                //   <Typography variant="body2" style={{ marginRight: '.3rem' }}>
-                //     More than:
-                //   </Typography>
-                // }
                 name="bulkDiscountQty"
                 InputProps={{ inputProps: { min: 2 } }}
               />
@@ -138,7 +133,7 @@ const SideSection: FC<SideSectionProps> = ({
                 size="small"
                 name="bulkDiscountPrice"
                 startIcon={<span>$</span>}
-                InputProps={{ inputProps: { min: 0 } }}
+                InputProps={{ inputProps: { min: 0, step: '0.01' } }}
               />
             </Grid>
           </Grid>

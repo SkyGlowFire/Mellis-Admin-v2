@@ -2,7 +2,7 @@ import { Paper, Typography, Button, Container } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import AddIcon from '@mui/icons-material/Add';
 import CustomProductsTable, {
-  CustomProductsTableProps,
+  TablePropsMultiple,
 } from '~/common/components/CustomProductsTable/CustomProductsTable';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useParams } from 'react-router-dom';
@@ -32,7 +32,7 @@ const RelatedProducts: FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: products } = useGetRelatedProductsQuery(id);
 
-  const actionHandler: CustomProductsTableProps['actionHandler'] = useCallback(
+  const actionHandler: TablePropsMultiple['actionHandler'] = useCallback(
     (selected) => removeRelatedProducts({ id, products: selected }),
     [id, removeRelatedProducts]
   );
@@ -55,9 +55,10 @@ const RelatedProducts: FC = () => {
             Assign Products
           </Button>
           <CustomProductsTable
+            type="multiple"
             products={products || []}
             actionText="Unlink products"
-            actionColor="secondary"
+            actionColor="error"
             actionHandler={actionHandler}
             actionIcon={RemoveIcon}
           />

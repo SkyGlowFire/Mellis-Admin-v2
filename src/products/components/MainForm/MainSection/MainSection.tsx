@@ -70,6 +70,7 @@ const MainSection = () => {
               variant="outlined"
               fullWidth
               name="weight"
+              InputProps={{ inputProps: { step: '0.1' } }}
             />
           </Grid>
           <Grid item>

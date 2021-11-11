@@ -17,6 +17,7 @@ import {
   useDisableProductsMutation,
   useEnableProductsMutation,
 } from '~/app/api';
+import { useConfirm } from '~/app/hooks';
 
 interface BulkUpdateBtnProps {
   selected: string[];
@@ -25,6 +26,7 @@ interface BulkUpdateBtnProps {
 const BulkUpdateBtn: FC<BulkUpdateBtnProps> = ({ selected }) => {
   const [open, setOpen] = useState<boolean>(false);
   const anchorRef = useRef(null);
+  const { confirm } = useConfirm();
   const [deleteProducts] = useDeleteProductsMutation();
   const [enableProducts] = useEnableProductsMutation();
   const [disableProducts] = useDisableProductsMutation();
@@ -40,7 +42,15 @@ const BulkUpdateBtn: FC<BulkUpdateBtnProps> = ({ selected }) => {
     },
     {
       name: 'Delete selected',
-      action: () => deleteProducts({ products: selected }),
+      action: async () => {
+        const confirmed = await confirm({
+          text: 'Are you sure you want to delete these products?',
+          title: 'Deleting products',
+          yesBtnText: 'Delete',
+          noBtnText: 'Cancel',
+        });
+        if (confirmed) deleteProducts({ products: selected });
+      },
     },
   ];
 

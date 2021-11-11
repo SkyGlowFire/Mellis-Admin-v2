@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { ICategory } from '~/types/categories';
+import { ICategory, ICategoryTreeItem } from '~/types/categories';
 import { makeStyles } from '@mui/styles';
 import { Link, Collapse, IconButton } from '@mui/material';
 import { fromUrlString } from '~/utils/textFormatters';
@@ -21,9 +21,9 @@ const useStyles = makeStyles<any, { level: number }>(() => ({
 }));
 
 interface CategoryItemProps {
-  category: ICategory;
-  selected?: ICategory;
-  selectHandler: (cat: ICategory) => void;
+  category: ICategoryTreeItem;
+  selected: ICategoryTreeItem | null;
+  selectHandler: (cat: ICategoryTreeItem) => void;
   treeCollapsed: boolean;
   collapseTrigger: boolean;
 }
@@ -47,7 +47,7 @@ const CategoryItem: FC<CategoryItemProps> = (props) => {
             selected && category._id === selected._id ? 'always' : 'hover'
           }
         >
-          {children.length > 0 && (
+          {children?.length > 0 && (
             <IconButton
               color="primary"
               component="span"

@@ -11,7 +11,8 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useDeleteCategoryMutation } from '~/app/api';
-import { ICategory } from '~/types/categories';
+import { ICategoryTreeItem } from '~/types/categories';
+import { useConfirm } from '~/app/hooks';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
@@ -40,18 +41,18 @@ interface CategoriesProps {}
 
 const Categories: FC<CategoriesProps> = () => {
   const [deleteCategory] = useDeleteCategoryMutation();
-  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] =
+    useState<ICategoryTreeItem | null>(null);
   const [createMode, setCreateMode] = useState<boolean>(true);
   const classes = useStyles();
+  const { confirm } = useConfirm();
 
   const addRootHandler = () => {
     setSelectedCategory(null);
     setCreateMode(true);
   };
 
-  const selectCategory = (category: ICategory) => {
+  const selectCategory = (category: ICategoryTreeItem) => {
     setSelectedCategory(category);
     setCreateMode(false);
   };
@@ -60,8 +61,14 @@ const Categories: FC<CategoriesProps> = () => {
     setCreateMode(true);
   };
 
-  const deleteHandler = () => {
-    if (selectedCategory) deleteCategory(selectedCategory._id);
+  const deleteHandler = async () => {
+    const confirmed = await confirm({
+      text: 'Are you sure you want to delete this category?',
+      title: 'Deleting category',
+      yesBtnText: 'Delete',
+      noBtnText: 'Cancel',
+    });
+    if (selectedCategory && confirmed) deleteCategory(selectedCategory._id);
   };
 
   return (

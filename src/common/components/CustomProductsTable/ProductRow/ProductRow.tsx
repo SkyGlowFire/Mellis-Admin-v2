@@ -50,7 +50,7 @@ const ProductRow: FC<ProductRowProps> = (props) => {
           variant="subtitle1"
           color={product.category ? 'textPrimary' : 'textSecondary'}
         >
-          {product.path}
+          {product.pathString}
         </Typography>
       </Grid>
       <Grid item style={{ marginRight: '1rem' }} xs={1}>

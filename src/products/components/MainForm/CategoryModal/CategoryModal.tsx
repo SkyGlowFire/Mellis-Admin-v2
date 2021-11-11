@@ -12,7 +12,7 @@ import { makeStyles } from '@mui/styles';
 import CategoriesTree from '~/common/components/CategoriesTree/CategoriesTree';
 import { useState, FC } from 'react';
 import { IProductPopulated } from '~/types/products';
-import { ICategory } from '~/types/categories';
+import { ICategory, ICategoryTreeItem } from '~/types/categories';
 
 const useStyles = makeStyles({
   root: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 
 interface CategoryModalProps {
   open: boolean;
-  onSelect: (category: ICategory) => void;
+  onSelect: (category: ICategoryTreeItem) => void;
   closeHandler: () => void;
   product?: IProductPopulated;
 }
@@ -36,9 +36,8 @@ const CategoryModal: FC<CategoryModalProps> = ({
   product,
 }) => {
   const classes = useStyles();
-  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] =
+    useState<ICategoryTreeItem | null>(null);
 
   const onSubmit = () => {
     selectedCategory && onSelect(selectedCategory);

@@ -34,6 +34,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product }) => {
         label={product.enable ? 'Enable' : 'Disable'}
         className={classes.label}
         checked={product.enable}
+        onClick={(e) => e.preventDefault()}
       />
     </div>
   );

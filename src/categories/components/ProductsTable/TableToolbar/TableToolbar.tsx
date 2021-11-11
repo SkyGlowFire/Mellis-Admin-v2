@@ -2,8 +2,8 @@ import { makeStyles } from '@mui/styles';
 import { Theme, Toolbar, Typography, IconButton, Tooltip } from '@mui/material';
 import { Color } from '../ProductsTable';
 import { FC } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
 import clsx from 'clsx';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 const useStyles = makeStyles<Theme, { color: Color }>((theme) => ({
   root: {
@@ -52,7 +52,7 @@ const TableToolbar: FC<TableToolbarProps> = (props) => {
     actionColor,
   } = props;
   const classes = useStyles({ color: actionColor });
-  const ActionIcon = actionIcon || DeleteIcon;
+  const ActionIcon = actionIcon || CancelOutlinedIcon;
 
   return (
     <>
@@ -83,7 +83,7 @@ const TableToolbar: FC<TableToolbarProps> = (props) => {
 
         {selected.length > 0 && (
           <Tooltip title={actionLabel || 'Delete'}>
-            <IconButton onClick={actionHandler}>
+            <IconButton onClick={actionHandler} sx={{ color: 'black' }}>
               <ActionIcon />
             </IconButton>
           </Tooltip>

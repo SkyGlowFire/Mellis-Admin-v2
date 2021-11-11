@@ -5,6 +5,7 @@ import PaginationBar from './PaginationBar/PaginationBar';
 import ProductRow from './ProductRow/ProductRow';
 import TableSearchbar from './TableSearchbar/TableSearchbar';
 import TableToolbar from './TableToolbar/TableToolbar';
+import TableToolbarSingle from './TableToolbarSingle/TableToolbarSingle';
 
 export type Color =
   | 'primary'
@@ -14,13 +15,27 @@ export type Color =
   | 'info'
   | 'warning';
 
-export interface CustomProductsTableProps {
+export interface TableProps {
   products: IProduct[];
   actionText: string;
-  actionIcon: FC;
+  actionIcon?: FC;
   actionColor: Color;
-  actionHandler: (selected: string[]) => void;
 }
+
+type MultipleActionHandler = (selected: string[]) => void;
+type SingleActionHandler = (selected: string) => void;
+
+export interface TablePropsSingle extends TableProps {
+  type: 'single';
+  actionHandler: SingleActionHandler;
+}
+
+export interface TablePropsMultiple extends TableProps {
+  type: 'multiple';
+  actionHandler: MultipleActionHandler;
+}
+
+export type CustomProductsTableProps = TablePropsMultiple | TablePropsSingle;
 
 const CustomProductsTable: FC<CustomProductsTableProps> = (props) => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -29,7 +44,7 @@ const CustomProductsTable: FC<CustomProductsTableProps> = (props) => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
   const [filteredData, setFilteredData] = useState<IProduct[]>([]);
   const [pageData, setPageData] = useState<IProduct[]>([]);
-  const { products, actionColor, actionHandler, actionIcon, actionText } =
+  const { products, actionColor, actionHandler, actionIcon, actionText, type } =
     props;
 
   useEffect(() => {
@@ -59,14 +74,19 @@ const CustomProductsTable: FC<CustomProductsTableProps> = (props) => {
   }, [itemsPerPage]);
 
   const selectHandler = useCallback(
-    (val) => () => {
-      if (selected.includes(val)) {
-        setSelected((prev) => prev.filter((x) => x !== val));
-      } else {
-        setSelected((prev) => [...prev, val]);
-      }
-    },
-    [selected]
+    (val) =>
+      type === 'multiple'
+        ? () => {
+            if (selected.includes(val)) {
+              setSelected((prev) => prev.filter((x) => x !== val));
+            } else {
+              setSelected((prev) => [...prev, val]);
+            }
+          }
+        : () => {
+            setSelected([val]);
+          },
+    [selected, type]
   );
 
   const selectAllHandler = useCallback(() => {
@@ -77,24 +97,39 @@ const CustomProductsTable: FC<CustomProductsTableProps> = (props) => {
     }
   }, [selected, pageData]);
 
+  const isChecked = (id: string): boolean => {
+    return type === 'multiple' ? selected.includes(id) : selected[0] === id;
+  };
+
   return (
     <div style={{ width: '100%' }}>
-      <TableToolbar
-        selected={selected}
-        products={pageData}
-        selectAllHandler={selectAllHandler}
-        actionHandler={actionHandler}
-        actionText={actionText}
-        actionIcon={actionIcon}
-        actionColor={actionColor}
-      />
+      {type === 'single' ? (
+        <TableToolbarSingle
+          selected={selected[0]}
+          actionHandler={actionHandler as SingleActionHandler}
+          actionText={actionText}
+          actionIcon={actionIcon}
+          actionColor={actionColor}
+        />
+      ) : (
+        <TableToolbar
+          selected={selected}
+          products={pageData}
+          selectAllHandler={selectAllHandler}
+          actionHandler={actionHandler as MultipleActionHandler}
+          actionText={actionText}
+          actionIcon={actionIcon}
+          actionColor={actionColor}
+        />
+      )}
+
       <TableSearchbar setSearchText={setSearchText} searchText={searchText} />
       {pageData?.length > 0 ? (
         pageData.map((product) => (
           <ProductRow
             key={product._id}
             product={product}
-            checked={selected.includes(product._id)}
+            checked={isChecked(product._id)}
             selectHandler={selectHandler}
           />
         ))

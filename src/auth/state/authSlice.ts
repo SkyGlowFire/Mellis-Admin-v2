@@ -1,6 +1,6 @@
-import { createSlice,  createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchUser, loginAPI, registerAPI } from './authAPI';
-import { RootState } from '../../app/store';
+import { createSlice,  createAsyncThunk, AnyAction } from '@reduxjs/toolkit';
+import { fetchUser, loginAPI, registerAPI, logOutAPI } from './authAPI';
+import { RootState } from '~/app/store';
 import { LoginUserDto, SignUpUserDto } from './dto/loginUser.dto';
 import { AxiosError} from 'axios';
 
@@ -45,6 +45,18 @@ export const signUp = createAsyncThunk(
   }
 );
 
+export const logOut = createAsyncThunk(
+  'auth/logout',
+  async (_, {rejectWithValue, dispatch}) => {
+    try {
+      await logOutAPI()
+    } catch (error) {
+      const err = error as AxiosError    
+      return rejectWithValue(err.response?.data)
+    }
+  }
+);
+
 export interface IUser{
     email: string
     username: string
@@ -57,12 +69,14 @@ interface AuthState{
     isAuth: boolean
     user: IUser | null
     loading: boolean
+    error: null | string
 }
 
 const initialState: AuthState = {
     isAuth: false,
     user: null,
-    loading: false
+    loading: true,
+    error: null
 }
 
 export const authSlice = createSlice({
@@ -73,14 +87,39 @@ export const authSlice = createSlice({
             state.isAuth = false
             state.user = null
         },
+        clearAuthError: (state) => {
+          state.error = null
+        },
     },
     extraReducers: builder => {
         builder
         .addCase(login.pending, (state) => {
             state.loading = true
+            state.error = null
+            state.user = null
         })
         .addCase(signUp.pending, (state) => {
             state.loading = true
+            state.error = null
+            state.user = null
+        })
+        .addCase(login.rejected, (state, action: AnyAction) => {
+            const {payload} = action
+            state.loading = false
+            if(payload?.status === 'FETCH_ERROR'){
+                state.error = 'Server does not respond'
+                return
+            }
+            state.error = payload?.data?.message || payload?.message
+        })
+         .addCase(signUp.rejected, (state, action: AnyAction) => {
+            const {payload} = action
+            state.loading = false
+            if(payload?.status === 'FETCH_ERROR'){
+                state.error = 'Server does not respond'
+                return
+            }
+            state.error = payload?.data?.message || payload?.message
         })
         .addCase(getUser.pending, (state) => {
             state.loading = true
@@ -89,6 +128,7 @@ export const authSlice = createSlice({
             state.loading = false
             state.user = action.payload
             state.isAuth = true
+            state.error = null
         })
         .addCase(getUser.rejected, (state) => {
             state.loading = false
@@ -98,6 +138,6 @@ export const authSlice = createSlice({
     }
 })
 
-export const {clearUser} = authSlice.actions
+export const {clearUser, clearAuthError} = authSlice.actions
 export const getMe = (state: RootState) => state.auth.user
 export default authSlice.reducer;

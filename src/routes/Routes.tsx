@@ -11,11 +11,15 @@ import Look from '~/looks/Look/Look';
 import NewLook from '~/looks/NewLook/NewLook';
 import Looks from '~/looks/Looks/Looks';
 import Orders from '~/orders/Orders/Orders';
+import Spinner from '~/common/components/Spinner/Spinner';
+import { useAppSelector } from '~/app/hooks';
 
 const MainRoutes = () => {
+  const { loading } = useAppSelector((state) => state.main);
   return (
     <>
       <ImageModal />
+      {loading && <Spinner />}
       <MainLayout>
         <Switch>
           <Route exact path="/" component={Dashboard} />

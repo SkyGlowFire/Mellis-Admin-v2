@@ -2,9 +2,11 @@ import { FC, useState, useEffect, SyntheticEvent } from 'react';
 import { Typography, Theme } from '@mui/material';
 import { NavTabs, NavTab } from '~/common/components/NavTabs/NavTabs';
 import { makeStyles } from '@mui/styles';
-import { ICategory } from '~/types/categories';
 import MainInfo from './MainInfo/MainInfo';
 import ProductsInfo from './ProductsInfo/ProductsInfo';
+import BestSeller from './BestSeller/Bestseller';
+import { ICategoryTreeItem } from '~/types/categories';
+import { useLazyGetCategoryQuery } from '~/app/api';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   main: {
@@ -27,7 +29,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
 
 interface MainSectionProps {
   createMode: boolean;
-  selectedCategory: ICategory | null;
+  selectedCategory: ICategoryTreeItem | null;
 }
 
 const MainSection: FC<MainSectionProps> = ({
@@ -36,6 +38,11 @@ const MainSection: FC<MainSectionProps> = ({
 }) => {
   const classes = useStyles();
   const [page, setPage] = useState<number>(0);
+  const [getCategory, { data: category }] = useLazyGetCategoryQuery();
+
+  useEffect(() => {
+    if (selectedCategory) getCategory(selectedCategory._id);
+  }, [selectedCategory]);
 
   useEffect(() => {
     if (createMode) setPage(0);
@@ -47,13 +54,17 @@ const MainSection: FC<MainSectionProps> = ({
   return (
     <div className={classes.main}>
       <div className={classes.header}>
-        <Typography gutterBottom>
-          {!createMode
-            ? selectedCategory && selectedCategory.path.join('/')
-            : !selectedCategory
-            ? 'New Root Category'
-            : `New SubCategory for ${selectedCategory.path.join('/')}`}
-        </Typography>
+        {createMode ? (
+          <Typography gutterBottom>
+            {selectedCategory
+              ? `New SubCategory for ${selectedCategory.path.join('/')}`
+              : 'New Root Category'}
+          </Typography>
+        ) : (
+          <Typography gutterBottom>
+            {selectedCategory ? selectedCategory.path.join('/') : ''}
+          </Typography>
+        )}
         <NavTabs
           value={page}
           indicatorColor="primary"
@@ -62,16 +73,21 @@ const MainSection: FC<MainSectionProps> = ({
         >
           <NavTab label="General" />
           {!createMode && <NavTab label="Products" />}
+          {!createMode && category?.level === 1 && (
+            <NavTab label="Bestseller" />
+          )}
         </NavTabs>
       </div>
       <div className={classes.content}>
-        {page === 0 ? (
+        {page === 0 && (
           <MainInfo
             selectedCategory={selectedCategory}
             createMode={createMode}
           />
-        ) : (
-          <ProductsInfo selectedCategory={selectedCategory} />
+        )}
+        {page === 1 && category && <ProductsInfo category={category} />}
+        {page === 2 && category?.level === 1 && (
+          <BestSeller category={category} />
         )}
       </div>
     </div>

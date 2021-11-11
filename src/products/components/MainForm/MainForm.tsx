@@ -159,7 +159,7 @@ const MainForm: FC<MainFormProps> = ({ product }) => {
       <CategoryModal
         onSelect={(category) => {
           dispatch(selectCategory(category));
-          setValue('category', category.id, { shouldDirty: true });
+          setValue('category', category._id, { shouldDirty: true });
           trigger('category');
         }}
         open={categoryModalOpen}

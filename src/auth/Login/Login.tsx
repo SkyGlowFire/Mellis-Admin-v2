@@ -6,28 +6,46 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { makeStyles } from '@mui/styles';
 import { schema } from './validationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { login } from '../state/authSlice';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { clearAuthError, login } from '../state/authSlice';
+import { useAppDispatch, useAppSelector } from '~/app/hooks';
 import { useLocation, Redirect } from 'react-router-dom';
 import {
   TextInputWithIcon,
   PasswordInput,
-} from '../../common/components/react-hook-form-inputs';
+} from '~/common/components/react-hook-form-inputs';
 import { LoginUserDto } from '../state/dto/loginUser.dto';
 import Alerts from '~/alerts/Alerts';
+import { useRef, useEffect, useLayoutEffect } from 'react';
+import { setAlert } from '~/alerts/alertSlice';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const useStyles = makeStyles({
   root: {
-    marginTop: '2rem',
+    padding: '2rem 0',
+    height: '100vh',
+    minHeight: 400,
   },
 });
 
 const Login = () => {
   const dispatch = useAppDispatch();
-  const { isAuth } = useAppSelector((state) => state.auth);
+  const { isAuth, error, loading } = useAppSelector((state) => state.auth);
   const classes = useStyles();
   const searchParams = new URLSearchParams(useLocation().search);
   const fromUrl = searchParams.get('from') || '/';
+  const firstRender = useRef<boolean>(true);
+
+  useLayoutEffect(() => {
+    firstRender.current = false;
+    return;
+  });
+
+  useEffect(() => {
+    if (error) {
+      dispatch(setAlert(error, 'error'));
+      dispatch(clearAuthError());
+    }
+  }, [error, dispatch]);
 
   const onSubmit = (data: LoginUserDto) => {
     dispatch(login(data));
@@ -36,7 +54,7 @@ const Login = () => {
   const methods = useForm({ resolver: yupResolver(schema) });
   const { handleSubmit } = methods;
 
-  return isAuth ? (
+  return !firstRender.current && isAuth ? (
     <Redirect to={fromUrl} />
   ) : (
     <>
@@ -69,16 +87,18 @@ const Login = () => {
             >
               Forgot password?
             </Typography>
-            <Button
+            <LoadingButton
               onClick={handleSubmit(onSubmit)}
               variant="contained"
               color="primary"
               type="submit"
               fullWidth
               className="mb-1"
+              loading={loading}
+              loadingPosition="start"
             >
               Log in
-            </Button>
+            </LoadingButton>
           </form>
         </Container>
       </FormProvider>

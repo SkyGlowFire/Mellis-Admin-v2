@@ -1,6 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { Route, Redirect, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../app/hooks';
+import { setAlert } from '~/alerts/alertSlice';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import Spinner from '~/common/components/Spinner/Spinner';
 
 type Roles = 'admin' | 'customer' | 'editor';
 
@@ -16,13 +18,27 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
 }) => {
   const location = useLocation();
   const { isAuth, user, loading } = useAppSelector((state) => state.auth);
+  const [permitted, setPermitted] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (loading) return;
+    if (!isAuth) {
+      dispatch(setAlert('Not authorized', 'error'));
+      setPermitted(false);
+    } else if (roles && user && !roles.includes(user.role)) {
+      dispatch(setAlert('You are not permitted to acces this paged', 'error'));
+      setPermitted(false);
+    }
+  }, [roles, isAuth, user, loading]);
 
   return (
     <Route
       {...rest}
       render={(props) =>
-        !loading &&
-        (!isAuth || (roles && user && !roles.includes(user.role))) ? (
+        loading ? (
+          <Spinner />
+        ) : !permitted ? (
           <Redirect to={`/auth/login?from=${location.pathname}`} />
         ) : (
           <ChildComponent {...props} />

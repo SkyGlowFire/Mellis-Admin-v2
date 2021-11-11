@@ -21,19 +21,17 @@ const useStyles = makeStyles(() => ({
 interface AddProductsModalInterface {
   open: boolean;
   closeHandler: () => void;
-  selectedCategory: ICategory | null;
+  category: ICategory;
 }
 
 const AddProductsModal: FC<AddProductsModalInterface> = ({
   open,
   closeHandler,
-  selectedCategory,
+  category,
 }) => {
   const { data: products } = useGetProductsQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      data: data
-        ? data.filter((x) => x.category !== selectedCategory?.id)
-        : null,
+      data: data ? data.filter((x) => x.category !== category.id) : null,
     }),
   });
 
@@ -57,14 +55,13 @@ const AddProductsModal: FC<AddProductsModalInterface> = ({
     ],
     actionHandler: useCallback(
       (selected) => {
-        selectedCategory &&
-          linkProducts({
-            categoryId: selectedCategory.id,
-            productIds: selected,
-          });
+        linkProducts({
+          categoryId: category.id,
+          productIds: selected,
+        });
         closeHandler();
       },
-      [selectedCategory, linkProducts, closeHandler]
+      [category, linkProducts, closeHandler]
     ),
     actionIcon: AddIcon,
     actionLabel: 'Add to category',
@@ -80,9 +77,7 @@ const AddProductsModal: FC<AddProductsModalInterface> = ({
       maxWidth={false}
       fullWidth
     >
-      <DialogTitle>
-        Add products to {selectedCategory && selectedCategory.path.join('/')}
-      </DialogTitle>
+      <DialogTitle>Add products to {category.path.join('/')}</DialogTitle>
       <DialogContent className={classes.content}>
         <ProductsTable {...tableProps} />
       </DialogContent>

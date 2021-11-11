@@ -8,6 +8,8 @@ import { MyTheme } from './styles';
 import { ThemeProvider } from '@mui/material/styles';
 import { ConnectedRouter } from 'connected-react-router';
 import ErrorHandler from './error/ErrorHandler';
+import { StyledEngineProvider } from '@mui/material/styles';
+import { ConfirmProvider } from '~/confirmWindow/ConfirmProvider';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -15,7 +17,11 @@ ReactDOM.render(
       <ConnectedRouter history={history}>
         <ThemeProvider theme={MyTheme}>
           <ErrorHandler>
-            <App />
+            <StyledEngineProvider injectFirst>
+              <ConfirmProvider>
+                <App />
+              </ConfirmProvider>
+            </StyledEngineProvider>
           </ErrorHandler>
         </ThemeProvider>
       </ConnectedRouter>

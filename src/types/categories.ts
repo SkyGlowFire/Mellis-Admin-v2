@@ -11,4 +11,14 @@ export interface ICategory{
     path: string[]
     products: IProduct[]
     totalProducts: number
+    bestseller: IProduct
+}
+
+export interface ICategoryTreeItem{
+    _id: string
+    title: string
+    level: number
+    children: ICategoryTreeItem[]
+    totalProducts: number
+    path: string[]
 }

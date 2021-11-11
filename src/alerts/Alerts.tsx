@@ -19,12 +19,6 @@ const Alerts: FC = () => {
   const { error } = useAppSelector((state) => state.main);
   const classes = useStyles();
 
-  useEffect(() => {
-    if (error) {
-      dispatch(setAlert(error.message, 'error'));
-    }
-  }, [error, dispatch]);
-
   return (
     <div className={classes.root}>
       <Stack

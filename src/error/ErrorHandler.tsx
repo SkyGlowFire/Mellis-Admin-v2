@@ -7,7 +7,7 @@ const ErrorHandler: FC = ({ children }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (error?.status === 401) {
+    if (error?.status === 401 || error?.status === 403) {
       dispatch(clearUser());
     }
   }, [error]);

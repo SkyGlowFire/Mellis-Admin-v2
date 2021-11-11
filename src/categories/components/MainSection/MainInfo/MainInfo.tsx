@@ -1,28 +1,34 @@
 import { FC } from 'react';
-import { Box, Grid, Theme } from '@mui/material';
+import { Box, Grid, Theme, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useState, useEffect } from 'react';
-import SaveButton from './SaveButton';
-import EditButton from './EditButton';
+import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { schema } from './validationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import TextInput from '~/common/components/react-hook-form-inputs/TextInput/TextInput';
-import { ICategory } from '~/types/categories';
+import { ICategoryTreeItem } from '~/types/categories';
 import { CreateCategoryDto } from '~/app/dto/create-category.dto';
-import { useAddCategoryMutation, useUpdateCategoryMutation } from '~/app/api';
+import {
+  useAddCategoryMutation,
+  useLazyGetCategoryQuery,
+  useUpdateCategoryMutation,
+} from '~/app/api';
+import SaveIcon from '@mui/icons-material/Save';
+import { setAlert } from '~/alerts/alertSlice';
+import { useAppDispatch } from '~/app/hooks';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   description: {
-    width: 700,
-    border: `1px solid ${theme.palette.secondary.light}`,
+    maxWidth: 700,
+    width: '100%',
+    border: `1px solid ${theme.palette.primary.light}`,
     position: 'relative',
     paddingBottom: '2rem',
     height: 300,
     borderRadius: 10,
   },
   descriptionHeader: {
-    backgroundColor: theme.palette.secondary.light,
+    backgroundColor: theme.palette.primary.light,
     padding: '.5rem',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -47,7 +53,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
 
 interface MainInfoProps {
   createMode: boolean;
-  selectedCategory: ICategory | null;
+  selectedCategory: ICategoryTreeItem | null;
 }
 
 type IFormData = {
@@ -57,16 +63,58 @@ type IFormData = {
 
 const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
   const classes = useStyles();
-  const [editMode, setEditMode] = useState<boolean>(false);
+  const [getCategory, { data: category, isLoading }] =
+    useLazyGetCategoryQuery();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (selectedCategory) getCategory(selectedCategory._id);
+  }, [selectedCategory]);
+
   const methods = useForm<IFormData>({
     resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: { title: '', text: '' },
   });
-  const { handleSubmit, reset } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = methods;
 
-  const [addCategory] = useAddCategoryMutation();
-  const [updateCategory] = useUpdateCategoryMutation();
+  useEffect(() => {
+    if (!createMode && category) {
+      reset({
+        title: category.title,
+        text: category.text,
+      });
+    } else {
+      reset({ title: '', text: '' });
+    }
+  }, [category, createMode, reset]);
+
+  const [addCategory, { isSuccess: createSuccess, originalArgs: createArgs }] =
+    useAddCategoryMutation();
+  const [
+    updateCategory,
+    { isSuccess: updateSuccess, originalArgs: updateArgs },
+  ] = useUpdateCategoryMutation();
+
+  useEffect(() => {
+    if (createSuccess) {
+      dispatch(
+        setAlert(`Category "${createArgs?.title}" has been created`, 'success')
+      );
+    }
+  }, [createSuccess, createArgs]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      dispatch(
+        setAlert(`Category "${updateArgs?.title}" has been updated`, 'success')
+      );
+    }
+  }, [updateSuccess, updateArgs]);
 
   const onSubmit = (data: IFormData) => {
     if (createMode) {
@@ -74,38 +122,23 @@ const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
       if (selectedCategory) values.parentId = selectedCategory._id;
       addCategory(values);
     } else {
-      selectedCategory && updateCategory({ id: selectedCategory._id, ...data });
+      if (selectedCategory)
+        updateCategory({ id: selectedCategory._id, ...data });
     }
-    setEditMode(false);
   };
-
-  useEffect(() => {
-    setEditMode(createMode);
-  }, [createMode]);
-
-  useEffect(() => {
-    if (selectedCategory && !createMode) {
-      reset({
-        title: selectedCategory.title,
-        text: selectedCategory.text,
-      });
-    } else {
-      reset({ title: '', text: '' });
-    }
-  }, [selectedCategory, createMode, reset]);
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container>
-          <Grid item xs={8}>
+          <Grid item xs={12}>
             <TextInput
-              disabled={!editMode}
               variant="outlined"
               InputLabelProps={{ shrink: true }}
               label="Title"
               name="title"
               className={classes.titleInput}
+              disabled={isLoading}
             />
             <div className={classes.description}>
               <div className={classes.descriptionHeader}>Description</div>
@@ -113,21 +146,25 @@ const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
                 placeholder="No description"
                 name="text"
                 className={classes.textarea}
-                disabled={!editMode}
                 variant="outlined"
                 multiline
                 rows="9"
+                disabled={isLoading}
               />
             </div>
           </Grid>
         </Grid>
 
         <Box sx={{ position: 'absolute', top: '2rem', right: '2rem' }}>
-          {!editMode ? (
-            <EditButton onClick={() => setEditMode(true)} />
-          ) : (
-            <SaveButton onClick={handleSubmit(onSubmit)} />
-          )}
+          <Button
+            variant="contained"
+            color={'primary'}
+            startIcon={<SaveIcon />}
+            disabled={!isDirty}
+            type="submit"
+          >
+            {createMode ? 'Create' : 'Update'}
+          </Button>
         </Box>
       </form>
     </FormProvider>

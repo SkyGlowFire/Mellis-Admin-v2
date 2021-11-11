@@ -37,7 +37,7 @@ interface TableToolbarProps {
   actionHandler: (selected: string[]) => void;
   selected: string[];
   actionText: string;
-  actionIcon: FC;
+  actionIcon?: FC;
   actionColor: Color;
 }
 
@@ -80,7 +80,7 @@ const TableToolbar: FC<TableToolbarProps> = (props) => {
           <Button
             variant="contained"
             className={classes.actionBtn}
-            startIcon={<ActionIcon />}
+            startIcon={actionIcon ? <ActionIcon /> : undefined}
             onClick={() => actionHandler(selected)}
           >
             {actionText}

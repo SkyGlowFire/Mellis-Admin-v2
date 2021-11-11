@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { ICategory } from "../types/categories";
+import { ICategory, ICategoryTreeItem } from "../types/categories";
 import { CreateCategoryDto, UpdateCategoryDto } from "./dto/create-category.dto";
 import { IProduct, IProductPopulated } from "~/types/products";
 import { ILook, IPopulatedLook } from "~/types/looks";
@@ -17,18 +17,30 @@ export const http = axios.create({
   withCredentials: true
 });
 
+export interface ICategoryProductsResponse{
+    products: IProduct[]
+    count: number
+    minPrice?: number
+    maxPrice?: number
+    category: ICategory
+}
+
 export const Api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_URI, credentials: 'include' }),
   tagTypes: ['Categories', 'Products', 'Looks', 'Orders'],
   endpoints: (builder) => ({
 
     //categories
-    getCategories: builder.query<ICategory[], void>({
-      query: () => `/categories`,
+    getCategoriesTree: builder.query<ICategoryTreeItem[], void>({
+      query: () => `/categories/tree`,
       providesTags: (result) =>
         result
           ? [...result.map(({ _id }) => ({ type: 'Categories' as const, id: _id })), 'Categories']
           : ['Categories'],
+    }),
+    getCategory: builder.query<ICategory, string>({
+      query: (id) => `/categories/${id}/details`,
+      providesTags: (result, err, id) => [{type: 'Categories', id}],
     }),
     addCategory: builder.mutation<ICategory, CreateCategoryDto>({
       query: data => ({
@@ -38,7 +50,7 @@ export const Api = createApi({
       }),
       invalidatesTags: ['Categories']
     }),
-      updateCategory: builder.mutation<ICategory, UpdateCategoryDto>({
+    updateCategory: builder.mutation<ICategory, UpdateCategoryDto>({
       query: ({id, ...data}) => ({
         url: `/categories/${id}`,
         method: 'PATCH',
@@ -46,14 +58,14 @@ export const Api = createApi({
       }),
       invalidatesTags: ['Categories', 'Products']
     }),
-      deleteCategory: builder.mutation<ICategory, string>({
+    deleteCategory: builder.mutation<ICategory, string>({
       query: (id) => ({
         url: `/categories/${id}`,
         method: 'DELETE'
       }),
       invalidatesTags: ['Categories', 'Products']
     }),
-     unlinkProducts: builder.mutation<{sucess: boolean}, {categoryId: string, productIds: string[]}>({
+    unlinkProducts: builder.mutation<{sucess: boolean}, {categoryId: string, productIds: string[]}>({
       query: ({categoryId, productIds}) => ({
         url: `/categories/${categoryId}/unlinkProducts`,
         method: 'PATCH',
@@ -61,7 +73,7 @@ export const Api = createApi({
       }),
       invalidatesTags: ['Categories', 'Products']
     }),
-     linkProducts: builder.mutation<{sucess: boolean}, {categoryId: string, productIds: string[]}>({
+    linkProducts: builder.mutation<{sucess: boolean}, {categoryId: string, productIds: string[]}>({
       query: ({categoryId, productIds}) => ({
         url: `/categories/${categoryId}/linkProducts`,
         method: 'PATCH',
@@ -69,9 +81,21 @@ export const Api = createApi({
       }),
       invalidatesTags: ['Categories', 'Products']
     }),
-    getCategoryProducts: builder.query<IProduct[], string | undefined>({
+    selectBestseller: builder.mutation<{sucess: boolean}, {categoryId: string, productId: string}>({
+      query: ({categoryId, productId}) => ({
+        url: `/categories/${categoryId}/bestseller`,
+        method: 'PATCH',
+        body: {product: productId}
+      }),
+      invalidatesTags: ['Categories']
+    }),
+    getCategoryProducts: builder.query<IProduct[], string>({
       query: (id) => `/categories/${id}/products`,
       providesTags: ['Categories']
+    }),
+    getCategorySubProducts: builder.query<ICategoryProductsResponse, {categoryName: string, groupName: string}>({
+      query: ({categoryName, groupName}) => `/products/category/${categoryName}/${groupName}`,
+      providesTags: ['Products']
     }),
 
     //products
@@ -226,7 +250,7 @@ export const Api = createApi({
 })
 
 export const {
-  useGetCategoriesQuery, 
+  useGetCategoriesTreeQuery, 
   useAddCategoryMutation, 
   useUpdateCategoryMutation, 
   useDeleteCategoryMutation, 
@@ -252,5 +276,9 @@ export const {
   useAddRelatedProductsMutation,
   useRemoveRelatedProductsMutation,
   useGetRelatedProductsQuery,
-  useGetOrdersQuery
+  useGetOrdersQuery,
+  useSelectBestsellerMutation,
+  useGetCategoryQuery,
+  useLazyGetCategoryQuery,
+  useGetCategorySubProductsQuery
 } = Api

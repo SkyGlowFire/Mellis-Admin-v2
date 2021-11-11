@@ -1,18 +1,29 @@
 import { FC } from 'react';
-import styles from './Spinner.module.scss';
-import { useAppSelector } from '../../../app/hooks';
 import CircularProgress from '@mui/material/CircularProgress';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles({
+  root: {
+    fontSize: '3rem',
+    position: 'fixed',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    zIndex: 1000,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  },
+});
 
 const Spinner: FC = () => {
-  const { loading } = useAppSelector((state) => state.main);
+  const classes = useStyles();
   return (
-    <>
-      {loading && (
-        <div className={styles.layout}>
-          <CircularProgress size={60} sx={{ marginTop: 30 }} />
-        </div>
-      )}
-    </>
+    <div className={classes.root}>
+      <CircularProgress size={60} />
+    </div>
   );
 };
 

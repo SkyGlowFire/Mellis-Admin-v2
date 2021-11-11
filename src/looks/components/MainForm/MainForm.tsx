@@ -21,6 +21,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CustomProductsTable, {
   CustomProductsTableProps,
+  TablePropsMultiple,
 } from '~/common/components/CustomProductsTable/CustomProductsTable';
 import { useHistory } from 'react-router-dom';
 
@@ -111,7 +112,7 @@ const MainForm: FC<MainFormProps> = ({ look }) => {
     }
   };
 
-  const deleteItems: CustomProductsTableProps['actionHandler'] = useCallback(
+  const deleteItems: TablePropsMultiple['actionHandler'] = useCallback(
     (selected) => {
       setValue(
         'items',
@@ -186,6 +187,7 @@ const MainForm: FC<MainFormProps> = ({ look }) => {
           </Button>
           {products && products.length !== 0 && (
             <CustomProductsTable
+              type="multiple"
               products={products}
               actionText="Remove products"
               actionColor="error"

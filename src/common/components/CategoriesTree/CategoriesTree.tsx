@@ -1,9 +1,9 @@
-import { FC, useState, useCallback } from 'react';
-import { useGetCategoriesQuery } from '~/app/api';
+import { FC, useState, useCallback, useEffect } from 'react';
+import { useGetCategoriesTreeQuery } from '~/app/api';
 import { makeStyles } from '@mui/styles';
 import CategoryItem from './CategoryItem/CategoryItem';
 import { Container, Link, Theme } from '@mui/material';
-import { ICategory } from '~/types/categories';
+import { ICategory, ICategoryTreeItem } from '~/types/categories';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
@@ -19,25 +19,31 @@ const useStyles = makeStyles<Theme>((theme) => ({
   },
 }));
 
-interface CategoriesTreProps {
-  selectAction: (category: ICategory) => void;
-  defaultSelected?: ICategory;
+interface CategoriesTreeProps {
+  selectAction: (category: ICategoryTreeItem) => void;
+  defaultSelected?: ICategoryTreeItem | ICategory;
 }
 
-const CategoriesTree: FC<CategoriesTreProps> = ({
+const CategoriesTree: FC<CategoriesTreeProps> = ({
   selectAction,
   defaultSelected,
 }) => {
-  const { data } = useGetCategoriesQuery();
+  const { data } = useGetCategoriesTreeQuery();
   const [treeCollapsed, setTreeCollapsed] = useState<boolean>(false);
   const [collapseTrigger, setCollapseTrigger] = useState<boolean>(false);
-  const [selected, setSelected] = useState<ICategory | undefined>(
-    defaultSelected
-  );
+  const [selected, setSelected] = useState<ICategoryTreeItem | null>(null);
+
+  useEffect(() => {
+    if (!defaultSelected) return;
+    const { _id, children, level, path, title, totalProducts } =
+      defaultSelected;
+    setSelected({ _id, children, level, path, title, totalProducts });
+  }, [defaultSelected]);
+
   const classes = useStyles();
 
   const selectHandler = useCallback(
-    (category: ICategory) => {
+    (category: ICategoryTreeItem) => {
       setSelected(category);
       if (selectAction) selectAction(category);
     },

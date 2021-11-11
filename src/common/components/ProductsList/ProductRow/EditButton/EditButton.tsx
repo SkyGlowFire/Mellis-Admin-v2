@@ -13,6 +13,7 @@ import { IProduct } from '~/types/products';
 import { useHistory } from 'react-router-dom';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useDeleteProductMutation } from '~/app/api';
+import { useConfirm } from '~/app/hooks';
 
 interface EditButtonProps {
   product: IProduct;
@@ -24,6 +25,7 @@ const EditButton: FC<EditButtonProps> = ({ product }) => {
   const anchorRef = useRef(null);
   const history = useHistory();
   const [deleteProduct] = useDeleteProductMutation();
+  const { confirm } = useConfirm();
 
   const options = [
     {
@@ -32,7 +34,15 @@ const EditButton: FC<EditButtonProps> = ({ product }) => {
     },
     {
       name: 'Delete',
-      action: () => deleteProduct(product._id),
+      action: async () => {
+        const confirmed = await confirm({
+          text: 'Are you sure you want to delete this product?',
+          title: 'Deleting product',
+          yesBtnText: 'Delete',
+          noBtnText: 'Cancel',
+        });
+        if (confirmed) deleteProduct(product._id);
+      },
     },
   ];
 

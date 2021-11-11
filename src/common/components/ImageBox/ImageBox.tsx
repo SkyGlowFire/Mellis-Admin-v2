@@ -15,7 +15,7 @@ const useStyles = makeStyles<Theme, { width: number; height: number }>(
       minWidth: width,
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center center',
+      backgroundPosition: 'center 0',
     }),
     overlay: {
       position: 'relative',

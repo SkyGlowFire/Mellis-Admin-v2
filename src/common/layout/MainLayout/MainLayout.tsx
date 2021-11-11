@@ -5,6 +5,7 @@ import { AppBar, Theme, Toolbar, useMediaQuery, useTheme } from '@mui/material';
 import Sidebar from './Sidebar/Sidebar';
 import Header from './Header/Header';
 import Alerts from '~/alerts/Alerts';
+import ConfirmModal from '~/confirmWindow/ConfirmModal';
 
 const useStyles = makeStyles<Theme, { sidebarOpen: boolean }>((theme) => ({
   main: {
@@ -52,6 +53,7 @@ const MainLayout: FC = ({ children }) => {
   return (
     <>
       <Alerts />
+      <ConfirmModal />
       <AppBar
         enableColorOnDark
         position="fixed"

@@ -9,7 +9,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import { useGetProductsQuery } from '~/app/api';
 import CustomProductsTable, {
-  CustomProductsTableProps,
+  TablePropsMultiple,
 } from '~/common/components/CustomProductsTable/CustomProductsTable';
 import { useFormContext } from 'react-hook-form';
 import { LookFormData } from '../MainForm';
@@ -43,7 +43,7 @@ const AddProductsModal: FC<AddProductsModalProps> = (props) => {
     }),
   });
 
-  const addItems: CustomProductsTableProps['actionHandler'] = useCallback(
+  const addItems: TablePropsMultiple['actionHandler'] = useCallback(
     (selected) => {
       setValue('items', items.concat(selected), { shouldDirty: true });
       clearErrors('items');
@@ -71,6 +71,7 @@ const AddProductsModal: FC<AddProductsModalProps> = (props) => {
               actionColor="success"
               actionHandler={addItems}
               actionIcon={AddIcon}
+              type="multiple"
             />
           ) : (
             <Typography variant="subtitle1" color="secondary">

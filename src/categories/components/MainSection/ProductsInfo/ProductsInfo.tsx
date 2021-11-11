@@ -4,22 +4,22 @@ import { Button, Typography } from '@mui/material';
 import ProductsTable, {
   ProductsTableProps,
 } from '~/categories/components/ProductsTable/ProductsTable';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { ICategory } from '~/types/categories';
 import {
   useGetCategoryProductsQuery,
   useUnlinkProductsMutation,
 } from '~/app/api';
 import AddProductsModal from './AddProductsModal/AddProductsModal';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 interface ProductsInfoProps {
-  selectedCategory: ICategory | null;
+  category: ICategory;
 }
 
-const ProductsInfo: FC<ProductsInfoProps> = ({ selectedCategory }) => {
+const ProductsInfo: FC<ProductsInfoProps> = ({ category }) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [unlinkProducts] = useUnlinkProductsMutation();
-  const { data: products } = useGetCategoryProductsQuery(selectedCategory?._id);
+  const { data: products } = useGetCategoryProductsQuery(category._id);
   const closeModal = () => {
     setModalOpen(false);
   };
@@ -33,18 +33,17 @@ const ProductsInfo: FC<ProductsInfoProps> = ({ selectedCategory }) => {
         { name: 'price', label: 'Price' },
       ],
       actionHandler: (selected) => {
-        selectedCategory &&
-          unlinkProducts({
-            categoryId: selectedCategory.id,
-            productIds: selected,
-          });
+        unlinkProducts({
+          categoryId: category.id,
+          productIds: selected,
+        });
       },
-      actionIcon: DeleteIcon,
+      actionIcon: CancelOutlinedIcon,
       actionLabel: 'Remove from category',
       actionColor: 'error',
       title: 'Category products',
     }),
-    [products, selectedCategory, unlinkProducts]
+    [products, category, unlinkProducts]
   );
 
   return (
@@ -60,7 +59,7 @@ const ProductsInfo: FC<ProductsInfoProps> = ({ selectedCategory }) => {
       <AddProductsModal
         open={modalOpen}
         closeHandler={closeModal}
-        selectedCategory={selectedCategory}
+        category={category}
       />
       {products && products.length > 0 ? (
         <ProductsTable {...tableProps} />

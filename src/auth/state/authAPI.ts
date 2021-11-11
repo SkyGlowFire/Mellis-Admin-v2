@@ -14,3 +14,7 @@ export async function loginAPI(dto: LoginUserDto): Promise<AxiosResponse<{access
 export async function registerAPI(dto: SignUpUserDto): Promise<AxiosResponse<{access_token: string}>> {
   return await http.post<{access_token: string}>('/users', dto)
 }
+
+export async function logOutAPI(): Promise<AxiosResponse> {
+  return await http.get('/auth/logout')
+}

@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ICategory } from '~/types/categories';
+import { ICategory, ICategoryTreeItem } from '~/types/categories';
 import { Media } from '~/types/image';
 import { RootState } from '../../app/store';
 
 interface ProductState{
     image: Media | null
     media: Media[]
-    category: ICategory | null | undefined
+    category: ICategoryTreeItem | null | undefined
 }
 
 const initialState: ProductState = {
@@ -31,7 +31,7 @@ export const productSlice = createSlice({
         deleteMedia: (state, action: PayloadAction<string>) => {
             state.media = state.media.filter(file => file._id !== action.payload)
         },
-        selectCategory: (state, action: PayloadAction<ICategory | undefined>) => {
+        selectCategory: (state, action: PayloadAction<ICategoryTreeItem | undefined>) => {
             state.category = action.payload
         },
         clearProduct: () => initialState
