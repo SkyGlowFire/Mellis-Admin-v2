@@ -1,21 +1,11 @@
 import axios from "axios";
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { ICategory, ICategoryTreeItem } from "../types/categories";
 import { CreateCategoryDto, UpdateCategoryDto } from "./dto/create-category.dto";
 import { IProduct, IProductPopulated } from "~/types/products";
 import { ILook, IPopulatedLook } from "~/types/looks";
 import { IOrder } from "~/types/orders";
-
-const API_URI = process.env.REACT_APP_API_URI
-
-export const http = axios.create({
-  baseURL: API_URI,
-  headers: {
-    "Content-type": "application/json"
-  },
-  timeout: 15000,
-  withCredentials: true
-});
+import { logOut } from "~/auth/state/authSlice";
 
 export interface ICategoryProductsResponse{
     products: IProduct[]
@@ -25,11 +15,31 @@ export interface ICategoryProductsResponse{
     category: ICategory
 }
 
+const API_URI = process.env.REACT_APP_API_URI
+
+const baseQuery = fetchBaseQuery({ baseUrl: API_URI, credentials: 'include' })
+
+const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
+  let result = await baseQuery(args, api, extraOptions)
+  if(result.error && result.error.status === 401){
+    const refreshResult = await baseQuery('/auth/refresh', api, extraOptions)
+    if(refreshResult.data){
+      result = await baseQuery(args, api, extraOptions)
+    } else {
+      api.dispatch(logOut())
+    }  
+  }
+  return result
+}
+
 export const Api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: API_URI, credentials: 'include' }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ['Categories', 'Products', 'Looks', 'Orders'],
   endpoints: (builder) => ({
-
     //categories
     getCategoriesTree: builder.query<ICategoryTreeItem[], void>({
       query: () => `/categories/tree`,
