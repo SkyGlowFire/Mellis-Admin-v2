@@ -79,13 +79,6 @@ const Login = () => {
               fullWidth
               style={{ marginBottom: '1rem' }}
             />
-            <Typography
-              variant="body2"
-              gutterBottom
-              style={{ marginBottom: '1rem' }}
-            >
-              Forgot password?
-            </Typography>
             <LoadingButton
               onClick={handleSubmit(onSubmit)}
               variant="contained"
