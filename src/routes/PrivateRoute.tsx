@@ -3,6 +3,7 @@ import { Route, Redirect, useLocation } from 'react-router-dom';
 import { setAlert } from '~/alerts/alertSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import Spinner from '~/common/components/Spinner/Spinner';
+import { getUser } from '~/auth/state/authSlice';
 
 type Roles = 'admin' | 'customer' | 'editor';
 
@@ -22,6 +23,10 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(getUser());
+  }, []);
+
+  useEffect(() => {
     if (loading) return;
     if (!isAuth) {
       dispatch(setAlert('Not authorized', 'error'));
@@ -30,7 +35,7 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
       dispatch(setAlert('You are not permitted to acces this paged', 'error'));
       setPermitted(false);
     }
-  }, [roles, isAuth, user, loading]);
+  }, [roles, isAuth, user, loading, dispatch]);
 
   return (
     <Route

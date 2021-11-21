@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Box, Grid, Theme, Button } from '@mui/material';
+import { Box, Theme, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -69,7 +69,7 @@ const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
 
   useEffect(() => {
     if (selectedCategory) getCategory(selectedCategory._id);
-  }, [selectedCategory]);
+  }, [selectedCategory, getCategory]);
 
   const methods = useForm<IFormData>({
     resolver: yupResolver(schema),
@@ -106,7 +106,7 @@ const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
         setAlert(`Category "${createArgs?.title}" has been created`, 'success')
       );
     }
-  }, [createSuccess, createArgs]);
+  }, [createSuccess, createArgs, dispatch]);
 
   useEffect(() => {
     if (updateSuccess) {
@@ -114,7 +114,7 @@ const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
         setAlert(`Category "${updateArgs?.title}" has been updated`, 'success')
       );
     }
-  }, [updateSuccess, updateArgs]);
+  }, [updateSuccess, updateArgs, dispatch]);
 
   const onSubmit = (data: IFormData) => {
     if (createMode) {
@@ -130,30 +130,26 @@ const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container>
-          <Grid item xs={12}>
-            <TextInput
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-              label="Title"
-              name="title"
-              className={classes.titleInput}
-              disabled={isLoading}
-            />
-            <div className={classes.description}>
-              <div className={classes.descriptionHeader}>Description</div>
-              <TextInput
-                placeholder="No description"
-                name="text"
-                className={classes.textarea}
-                variant="outlined"
-                multiline
-                rows="9"
-                disabled={isLoading}
-              />
-            </div>
-          </Grid>
-        </Grid>
+        <TextInput
+          variant="outlined"
+          InputLabelProps={{ shrink: true }}
+          label="Title"
+          name="title"
+          className={classes.titleInput}
+          disabled={isLoading}
+        />
+        <div className={classes.description}>
+          <div className={classes.descriptionHeader}>Description</div>
+          <TextInput
+            placeholder="No description"
+            name="text"
+            className={classes.textarea}
+            variant="outlined"
+            multiline
+            rows="7"
+            disabled={isLoading}
+          />
+        </div>
 
         <Box sx={{ position: 'absolute', top: '2rem', right: '2rem' }}>
           <Button

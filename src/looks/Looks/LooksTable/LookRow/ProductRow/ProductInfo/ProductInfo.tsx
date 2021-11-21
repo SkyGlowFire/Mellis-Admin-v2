@@ -27,7 +27,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product }) => {
   return (
     <Grid container spacing={2}>
       <Grid item className={classes.image}>
-        <img src={`${product.image.url}`} style={{ width: '100%' }} />
+        <img src={`${product.image.url}`} style={{ width: '100%' }} alt="" />
       </Grid>
       <Grid item>
         <div className={classes.info}>

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ICategory, ICategoryTreeItem } from '~/types/categories';
+import {  ICategoryTreeItem } from '~/types/categories';
 import { Media } from '~/types/image';
-import { RootState } from '../../app/store';
 
 interface ProductState{
     image: Media | null

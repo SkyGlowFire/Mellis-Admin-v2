@@ -6,7 +6,7 @@ import DropBox, { DropBoxProps } from '~/common/components/DropBox/DropBox';
 import ImageBox, { ImageBoxprops } from '~/common/components/ImageBox/ImageBox';
 import clsx from 'clsx';
 import { useAppSelector, useAppDispatch } from '~/app/hooks';
-import { Media, MediaFile } from '~/types/image';
+import { MediaFile } from '~/types/image';
 import { setImage } from '~/products/state/productSlice';
 import { ProductFormData } from '../MainForm';
 import { formMedia } from '~/utils/formMedia';

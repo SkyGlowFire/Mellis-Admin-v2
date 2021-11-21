@@ -12,7 +12,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
   main: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100%',
+    minHeight: '100%',
     position: 'relative',
   },
   content: {
@@ -42,7 +42,7 @@ const MainSection: FC<MainSectionProps> = ({
 
   useEffect(() => {
     if (selectedCategory) getCategory(selectedCategory._id);
-  }, [selectedCategory]);
+  }, [selectedCategory, getCategory]);
 
   useEffect(() => {
     if (createMode) setPage(0);

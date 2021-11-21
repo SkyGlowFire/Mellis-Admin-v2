@@ -7,7 +7,7 @@ import {
   Theme,
   Typography,
 } from '@mui/material';
-import { ILook, IPopulatedLook } from '~/types/looks';
+import { IPopulatedLook } from '~/types/looks';
 import { FC, useState } from 'react';
 import LabelSwitch from '~/common/components/form-inputs/LabelSwitch/LabelSwitch';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -82,7 +82,7 @@ const LookRow: FC<LookRowProps> = ({ look, selectHandler, checked }) => {
           <Grid item xs={1}></Grid>
           <Grid item xs className={classes.items}>
             {look.items.map((item) => (
-              <ProductRow product={item} />
+              <ProductRow product={item} key={item._id} />
             ))}
           </Grid>
         </Grid>

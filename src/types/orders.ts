@@ -16,6 +16,7 @@ export interface Address{
 }
 
 export interface IOrderItem{
+    _id: string
     title: string
     size: string
     color: string

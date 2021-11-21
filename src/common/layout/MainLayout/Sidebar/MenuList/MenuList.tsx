@@ -1,15 +1,8 @@
 import MenuItem from '../MenuItem/MenuItem';
 import { List } from '@mui/material';
-import {
-  Dashboard,
-  ShoppingCart,
-  Storage,
-  CameraAlt,
-  Payment,
-} from '@mui/icons-material';
+import { ShoppingCart, Storage, CameraAlt, Payment } from '@mui/icons-material';
 
 const links = [
-  { title: 'Dashboard', path: '/', icon: <Dashboard /> },
   { title: 'Products', path: '/products', icon: <ShoppingCart /> },
   { title: 'Categories', path: '/categories', icon: <Storage /> },
   { title: 'Orders', path: '/orders', icon: <Payment /> },

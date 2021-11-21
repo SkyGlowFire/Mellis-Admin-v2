@@ -10,7 +10,7 @@ const NewLook: FC<NewLookProps> = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(clearImage());
-  }, []);
+  }, [dispatch]);
   return (
     <Container sx={{ maxWidth: 1600, paddingTop: '3rem' }} maxWidth={false}>
       <Typography variant="h5" gutterBottom>

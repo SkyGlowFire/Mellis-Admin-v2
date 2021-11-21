@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { ICategory, ICategoryTreeItem } from '~/types/categories';
+import { ICategoryTreeItem } from '~/types/categories';
 import { makeStyles } from '@mui/styles';
 import { Link, Collapse, IconButton } from '@mui/material';
 import { fromUrlString } from '~/utils/textFormatters';

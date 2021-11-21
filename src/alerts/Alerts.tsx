@@ -1,6 +1,6 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Alert, Stack, AlertTitle, Typography } from '@mui/material';
-import { selectAlerts, removeAlert, setAlert } from './alertSlice';
+import { selectAlerts, removeAlert } from './alertSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { makeStyles } from '@mui/styles';
 
@@ -16,7 +16,6 @@ const useStyles = makeStyles(() => ({
 const Alerts: FC = () => {
   const dispatch = useAppDispatch();
   const alerts = useAppSelector(selectAlerts);
-  const { error } = useAppSelector((state) => state.main);
   const classes = useStyles();
 
   return (

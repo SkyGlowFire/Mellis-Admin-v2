@@ -19,6 +19,7 @@ import MainSection from './MainSection/MainSection';
 import SideSection from './SideSection/SideSection';
 import { useAppDispatch } from '~/app/hooks';
 import { useHistory } from 'react-router-dom';
+import { setAlert } from '~/alerts/alertSlice';
 
 const useStyles = makeStyles<Theme>(() => ({
   root: {
@@ -86,7 +87,8 @@ const MainForm: FC<MainFormProps> = ({ product }) => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const [updateProduct] = useUpdateProductMutation();
+  const [updateProduct, { isSuccess: updateSuccess }] =
+    useUpdateProductMutation();
   const [createProduct, { isSuccess: createSuccess, data: newProduct }] =
     useAddProductMutation();
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
@@ -115,8 +117,17 @@ const MainForm: FC<MainFormProps> = ({ product }) => {
   }, [product, reset, dispatch]);
 
   useEffect(() => {
-    if (newProduct) history.push(`/product/${newProduct._id}`);
-  }, [createSuccess, newProduct]);
+    if (newProduct && createSuccess) {
+      history.push(`/product/${newProduct._id}`);
+      dispatch(setAlert('New Product has been added', 'success'));
+    }
+  }, [createSuccess, newProduct, dispatch, history]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      dispatch(setAlert('Product has been updated', 'success'));
+    }
+  }, [updateSuccess, dispatch]);
 
   const onSubmit = (values: ProductFormData) => {
     const data = { ...values };

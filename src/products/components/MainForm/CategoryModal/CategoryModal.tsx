@@ -12,7 +12,7 @@ import { makeStyles } from '@mui/styles';
 import CategoriesTree from '~/common/components/CategoriesTree/CategoriesTree';
 import { useState, FC } from 'react';
 import { IProductPopulated } from '~/types/products';
-import { ICategory, ICategoryTreeItem } from '~/types/categories';
+import { ICategoryTreeItem } from '~/types/categories';
 
 const useStyles = makeStyles({
   root: {

@@ -14,11 +14,8 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CustomMenuItem from '~/common/components/CustomMenuItem/CustomMenuItem';
 import {
   useDeleteLooksMutation,
-  useDeleteProductsMutation,
   useDisableLooksMutation,
-  useDisableProductsMutation,
   useEnableLooksMutation,
-  useEnableProductsMutation,
 } from '~/app/api';
 
 interface BulkUpdateBtnProps {

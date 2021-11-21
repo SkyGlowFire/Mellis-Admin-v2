@@ -1,5 +1,4 @@
-import { Grid, Typography, Checkbox, Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Grid, Typography } from '@mui/material';
 import { FC } from 'react';
 import { IProduct } from '~/types/products';
 import ProductInfo from './ProductInfo/ProductInfo';

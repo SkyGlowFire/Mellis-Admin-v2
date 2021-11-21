@@ -1,4 +1,3 @@
-import axios from "axios";
 import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { ICategory, ICategoryTreeItem } from "../types/categories";
 import { CreateCategoryDto, UpdateCategoryDto } from "./dto/create-category.dto";
@@ -256,6 +255,15 @@ export const Api = createApi({
           ? [...result.map(({ _id }) => ({ type: 'Orders' as const, id: _id })), 'Orders']
           : ['Orders'],
     }),
+
+    updateOrderStatus: builder.mutation<IOrder, {id: string, status: string}>({
+      query: ({id, ...data}) => ({
+        url: `/orders/${id}/status`,
+        method: 'PATCH',
+        body: data
+      }),
+      invalidatesTags: ['Orders']
+    }),
   }),
 })
 
@@ -290,5 +298,6 @@ export const {
   useSelectBestsellerMutation,
   useGetCategoryQuery,
   useLazyGetCategoryQuery,
-  useGetCategorySubProductsQuery
+  useGetCategorySubProductsQuery,
+  useUpdateOrderStatusMutation
 } = Api

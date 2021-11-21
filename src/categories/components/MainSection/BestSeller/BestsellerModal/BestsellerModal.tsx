@@ -54,7 +54,7 @@ const BestsellerModal: FC<BestsellerModalProps> = ({
       });
       setModalOpen(false);
     },
-    [setModalOpen, category]
+    [setModalOpen, category, selectBestseller]
   );
 
   return (

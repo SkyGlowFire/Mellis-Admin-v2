@@ -17,7 +17,7 @@ const NewProduct = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(clearProduct());
-  }, []);
+  }, [dispatch]);
   return (
     <>
       <Container className={classes.root} maxWidth={false}>

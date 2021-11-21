@@ -1,7 +1,6 @@
 import { Grid, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import { FC } from 'react';
 import { IPopulatedLook } from '~/types/looks';
-import { IProduct } from '~/types/products';
 import BulkUpdateBtn from './BulkUpdateButton/BulkUpdateButton';
 
 interface TableToolbarProps {

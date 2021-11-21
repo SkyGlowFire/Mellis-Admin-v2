@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Button, Typography } from '@mui/material';
 import ProductsTable, {
   ProductsTableProps,

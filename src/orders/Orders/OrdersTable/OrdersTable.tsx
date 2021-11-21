@@ -28,7 +28,9 @@ const OrdersTable = () => {
         </TableHead>
         <TableBody>
           {orders && orders.length > 0 ? (
-            orders.map((order, idx) => <OrderRow order={order} />)
+            orders.map((order, idx) => (
+              <OrderRow order={order} key={order._id} />
+            ))
           ) : (
             <TableRow>
               <TableCell colSpan={6}>No orders</TableCell>

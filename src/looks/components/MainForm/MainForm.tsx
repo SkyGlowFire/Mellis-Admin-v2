@@ -20,10 +20,10 @@ import AddProductsModal from './AddProductsModal/AddProductsModal';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CustomProductsTable, {
-  CustomProductsTableProps,
   TablePropsMultiple,
 } from '~/common/components/CustomProductsTable/CustomProductsTable';
 import { useHistory } from 'react-router-dom';
+import { setAlert } from '~/alerts/alertSlice';
 
 interface MainFormProps {
   look?: ILook;
@@ -67,7 +67,7 @@ const MainForm: FC<MainFormProps> = ({ look }) => {
   const items = watch('items');
   const [addLook, { isSuccess: createSuccess, data: newLook }] =
     useAddLookMutation();
-  const [updateLook] = useUpdateLookMutation();
+  const [updateLook, { isSuccess: updateSuccess }] = useUpdateLookMutation();
 
   const dispatch = useAppDispatch();
 
@@ -89,8 +89,17 @@ const MainForm: FC<MainFormProps> = ({ look }) => {
   }, [look, reset, dispatch]);
 
   useEffect(() => {
-    if (newLook) history.push(`/look/${newLook._id}`);
-  }, [createSuccess, newLook]);
+    if (newLook && createSuccess) {
+      history.push(`/look/${newLook._id}`);
+      dispatch(setAlert('Look has been successfully created'));
+    }
+  }, [createSuccess, newLook, dispatch, history]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      dispatch(setAlert('Look info has been successfully updated'));
+    }
+  }, [updateSuccess, dispatch]);
 
   const onSubmit = (values: LookFormData) => {
     console.log(values);
@@ -122,7 +131,7 @@ const MainForm: FC<MainFormProps> = ({ look }) => {
       trigger('items');
       refetch();
     },
-    [items, setValue]
+    [items, setValue, trigger, refetch]
   );
 
   return (

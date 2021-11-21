@@ -1,6 +1,5 @@
 import { Route, Switch } from 'react-router-dom';
 import Page404 from '../error/Page404/Page404';
-import Dashboard from '../home/Dashboard';
 import MainLayout from '../common/layout/MainLayout/MainLayout';
 import Categories from '~/categories/Categories';
 import Product from '~/products/Product/Product';
@@ -22,7 +21,6 @@ const MainRoutes = () => {
       {loading && <Spinner />}
       <MainLayout>
         <Switch>
-          <Route exact path="/" component={Dashboard} />
           <Route path="/categories" component={Categories} />
           <Route exact path="/products" component={Products} />
           <Route path="/product/:id" component={Product} />

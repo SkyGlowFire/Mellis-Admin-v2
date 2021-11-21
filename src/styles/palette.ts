@@ -20,6 +20,7 @@ export default function themePalette(theme: IColorOptions): IPaletteOptions {
       dark: theme.colors.primaryDark,
       200: theme.colors.primary200,
       800: theme.colors.primary800,
+      contrastText: theme.colors.grey50
     },
     secondary: {
       light: theme.colors.secondaryLight,
@@ -27,27 +28,32 @@ export default function themePalette(theme: IColorOptions): IPaletteOptions {
       dark: theme.colors.secondaryDark,
       200: theme.colors.secondary200,
       800: theme.colors.secondary800,
+      contrastText: theme.colors.grey50
     },
     error: {
       light: theme.colors.errorLight,
       main: theme.colors.errorMain,
       dark: theme.colors.errorDark,
+      contrastText: theme.colors.grey50
     },
     orange: {
       light: theme.colors.orangeLight,
       main: theme.colors.orangeMain,
       dark: theme.colors.orangeDark,
+      contrastText: theme.colors.grey50
     },
     warning: {
       light: theme.colors.warningLight,
       main: theme.colors.warningMain,
       dark: theme.colors.warningDark,
+      contrastText: theme.colors.grey50
     },
     success: {
       light: theme.colors.successLight,
       200: theme.colors.success200,
       main: theme.colors.successMain,
       dark: theme.colors.successDark,
+      contrastText: theme.colors.grey50
     },
     grey: {
       50: theme.colors.grey50,

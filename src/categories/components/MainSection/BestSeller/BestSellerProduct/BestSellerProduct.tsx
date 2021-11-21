@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { IProduct } from '~/types/products';
 import { makeStyles } from '@mui/styles';
-import { Theme, Typography, Grid } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import LabelSwitch from '~/common/components/form-inputs/LabelSwitch/LabelSwitch';
 
 const useStyles = makeStyles({

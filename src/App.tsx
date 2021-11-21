@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
-
 import PrivateRoute from './routes/PrivateRoute';
 import Login from './auth/Login/Login';
 import Routes from './routes/Routes';

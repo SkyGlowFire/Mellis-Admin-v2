@@ -1,5 +1,4 @@
 import * as yup from 'yup'
-import { LookOrientation } from '~/types/looks'
 
 export const schema = yup.object().shape({
     hasImage: yup.boolean(),
