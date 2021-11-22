@@ -17,14 +17,12 @@ const useStyles = makeStyles({
   formControl: {
     minWidth: 140,
   },
-  select: {},
 });
 
 const menuProps = {
   PaperProps: {
     style: {
       maxHeight: 150,
-      // width: 250,
     },
   },
 };
@@ -64,7 +62,6 @@ const MySelect: FC<MySelectProps> = (props) => {
             label={label}
             multiple={multiple}
             MenuProps={menuProps}
-            classes={{ root: classes.select }}
             renderValue={(selected) => {
               if (multiple) {
                 const values = selected as SelectOption[];
