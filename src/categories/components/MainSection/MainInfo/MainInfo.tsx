@@ -102,6 +102,7 @@ const MainInfo: FC<MainInfoProps> = ({ createMode, selectedCategory }) => {
 
   useEffect(() => {
     if (createSuccess) {
+      reset({ title: '', text: '' });
       dispatch(
         setAlert(`Category "${createArgs?.title}" has been created`, 'success')
       );
