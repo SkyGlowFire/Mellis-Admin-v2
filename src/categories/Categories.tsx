@@ -102,7 +102,7 @@ const Categories: FC<CategoriesProps> = () => {
       <Paper>
         <Grid container className={classes.container}>
           <Grid item xs={3} className={classes.side}>
-            <Container>
+            <Container sx={{ maxHeight: '600px', overflowY: 'auto' }}>
               <Typography variant="subtitle1" gutterBottom>
                 Categories
               </Typography>
