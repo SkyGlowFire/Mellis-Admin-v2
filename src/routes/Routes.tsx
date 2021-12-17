@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import Page404 from '../error/Page404/Page404';
 import MainLayout from '../common/layout/MainLayout/MainLayout';
 import Categories from '~/categories/Categories';
@@ -21,6 +21,9 @@ const MainRoutes = () => {
       {loading && <Spinner />}
       <MainLayout>
         <Switch>
+          <Route exact path="/">
+            <Redirect to="/products" />
+          </Route>
           <Route path="/categories" component={Categories} />
           <Route exact path="/products" component={Products} />
           <Route path="/product/:id" component={Product} />
