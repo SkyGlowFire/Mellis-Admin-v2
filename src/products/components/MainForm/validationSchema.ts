@@ -2,7 +2,7 @@ import * as yup from 'yup'
 
 export const schema = yup.object().shape({
   title: yup.string().required('*Title required')
-  .matches(/^([\w -]*)$/, 'Title can include only characters, spaces and "-", "/" symbols'),
+  .matches(/^([\w -/]*)$/, 'Title can include only characters, spaces and "-", "/" symbols'),
   category: yup.string().required('*Please assign category').defined(),
   description: yup.string().matches(/^(|.{10,500})$/, "*Description text must be between 10-500 characters"),
   hasImage: yup.boolean(),
