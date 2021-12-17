@@ -18,7 +18,7 @@ http.interceptors.response.use(res => res, async (err) => {
     if ( err?.response?.status === 401 && !originalConfig._isRetry){
       originalConfig._isRetry = true
       try {
-        await axios.get(`${API_URI}auth/refresh`, {withCredentials: true})
+        await axios.get(`${API_URI}/auth/refresh`, {withCredentials: true})
         return http(originalConfig)
       } catch (error) {
         return Promise.reject(error);
