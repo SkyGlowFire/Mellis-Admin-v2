@@ -6,6 +6,10 @@ import { AxiosError} from 'axios';
 
 export type Role = 'admin' | 'editor' | 'customer'
 
+const isRejectedAction = (action: AnyAction): action is AnyAction => { 
+  return action.type.endsWith("/rejected");
+};
+
 export const getUser = createAsyncThunk(
   'auth/fetchUser',
   async (_, {rejectWithValue}) => {
@@ -139,6 +143,12 @@ export const authSlice = createSlice({
             state.user = null
             state.isAuth = false
             state.error = null
+        })
+        .addMatcher(isRejectedAction, (state, action: AnyAction) => {
+            if(action.payload?.status === 401){
+              state.user = null
+              state.isAuth = false
+            }
         })
     }
 })

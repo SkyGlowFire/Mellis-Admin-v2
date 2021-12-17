@@ -29,7 +29,8 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
     if(refreshResult.data){
       result = await baseQuery(args, api, extraOptions)
     } else {
-      api.dispatch(logOut())
+      // api.dispatch(logOut())
+      return Promise.reject(result.error)
     }  
   }
   return result
