@@ -135,6 +135,11 @@ export const authSlice = createSlice({
             state.isAuth = false
             state.user = null
         })
+        .addCase(logOut.pending, (state) => {
+            state.user = null
+            state.isAuth = false
+            state.error = null
+        })
     }
 })
 
