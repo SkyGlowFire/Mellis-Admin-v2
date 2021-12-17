@@ -1,6 +1,10 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { useConfirmContext } from '~/confirmWindow/ConfirmProvider';
 import type { RootState, AppDispatch } from './store';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { SerializedError } from '@reduxjs/toolkit';
+import { setAlert } from '~/alerts/alertSlice';
+import { useCallback } from 'react';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -14,6 +18,7 @@ interface ConfirmProps{
 }
 // useConfirm hook
 let resolveCallback: Function = () => {}
+
 export const useConfirm = () => {
     const {
         setShow, 
@@ -55,5 +60,23 @@ export const useConfirm = () => {
     }
 
     return {confirm, onConfirm, onCancel, confirmState}
+}
 
+//show Api errors function
+export const useApiErrorDisplay =() => {
+    const dispatch = useAppDispatch()
+    type ApiError = FetchBaseQueryError | SerializedError | undefined
+
+    const displayError = useCallback((apiError: ApiError) => {
+        const err = apiError as {
+            data?: { message: string; status: number };
+        };
+        if (err?.data) {
+            dispatch(setAlert(err.data.message, 'error'));
+        } else {
+            dispatch(setAlert('An error occured during product save', 'error'));
+        }
+    }, [dispatch])
+
+    return {displayError}
 }

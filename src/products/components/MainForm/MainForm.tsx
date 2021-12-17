@@ -17,7 +17,7 @@ import MainImage from './MainImage/MainImage';
 import MediaFiles from './MediaFiles/MediaFiles';
 import MainSection from './MainSection/MainSection';
 import SideSection from './SideSection/SideSection';
-import { useAppDispatch } from '~/app/hooks';
+import { useApiErrorDisplay, useAppDispatch } from '~/app/hooks';
 import { useHistory } from 'react-router-dom';
 import { setAlert } from '~/alerts/alertSlice';
 
@@ -87,10 +87,19 @@ const MainForm: FC<MainFormProps> = ({ product }) => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const [updateProduct, { isSuccess: updateSuccess }] =
-    useUpdateProductMutation();
-  const [createProduct, { isSuccess: createSuccess, data: newProduct }] =
-    useAddProductMutation();
+  const [
+    updateProduct,
+    { isSuccess: updateSuccess, isError: updateFailed, error: updateError },
+  ] = useUpdateProductMutation();
+  const [
+    createProduct,
+    {
+      isSuccess: createSuccess,
+      data: newProduct,
+      isError: createFailed,
+      error: createError,
+    },
+  ] = useAddProductMutation();
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
   const methods = useForm<ProductFormData>({
     resolver: yupResolver(schema),
@@ -98,6 +107,7 @@ const MainForm: FC<MainFormProps> = ({ product }) => {
     defaultValues: defaultValues,
   });
   const { handleSubmit, reset, setValue, trigger } = methods;
+  const { displayError } = useApiErrorDisplay();
 
   useEffect(() => {
     if (!product) return;
@@ -128,6 +138,18 @@ const MainForm: FC<MainFormProps> = ({ product }) => {
       dispatch(setAlert('Product has been updated', 'success'));
     }
   }, [updateSuccess, dispatch]);
+
+  useEffect(() => {
+    if (updateFailed) {
+      displayError(updateError);
+    }
+  }, [updateFailed, updateError]);
+
+  useEffect(() => {
+    if (createFailed) {
+      displayError(createError);
+    }
+  }, [createFailed, createError]);
 
   const onSubmit = (values: ProductFormData) => {
     const data = { ...values };
