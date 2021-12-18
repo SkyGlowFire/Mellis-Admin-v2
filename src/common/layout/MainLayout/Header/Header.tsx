@@ -1,11 +1,12 @@
-import { Avatar, Box, ButtonBase, Theme } from '@mui/material';
+import { Avatar, Box, ButtonBase, Stack, Theme } from '@mui/material';
 import Logo from '../Logo/Logo';
 import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
 import { FC } from 'react';
+import ProfileSection from './ProfileSection';
 
 const useStyles = makeStyles<Theme>((theme) => ({
-  headerAvatar: {
+  navBtn: {
     transition: 'all .2s ease-in-out',
     background: theme.palette.secondary.light,
     color: theme.palette.secondary.dark,
@@ -14,7 +15,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
       color: theme.palette.secondary.light,
     },
   },
-  boxContainer: {
+  logoSection: {
     width: '228px',
     display: 'flex',
     [theme.breakpoints.down('md')]: {
@@ -30,24 +31,31 @@ interface HeaderProps {
 const Header: FC<HeaderProps> = ({ toggleSidebar }) => {
   const classes = useStyles();
   return (
-    <div className={classes.boxContainer}>
-      <Box
-        component="span"
-        sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}
-      >
-        <Logo />
-      </Box>
-      <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
-        <Avatar
-          variant="rounded"
-          className={classes.headerAvatar}
-          onClick={toggleSidebar}
-          color="inherit"
+    <Stack
+      justifyContent="space-between"
+      direction="row"
+      sx={{ width: '100%' }}
+    >
+      <div className={classes.logoSection}>
+        <Box
+          component="span"
+          sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}
         >
-          <MenuIcon fontSize="medium" />
-        </Avatar>
-      </ButtonBase>
-    </div>
+          <Logo />
+        </Box>
+        <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
+          <Avatar
+            variant="rounded"
+            className={classes.navBtn}
+            onClick={toggleSidebar}
+            color="inherit"
+          >
+            <MenuIcon fontSize="medium" />
+          </Avatar>
+        </ButtonBase>
+      </div>
+      <ProfileSection />
+    </Stack>
   );
 };
 

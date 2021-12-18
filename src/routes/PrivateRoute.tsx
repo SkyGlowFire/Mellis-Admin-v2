@@ -29,7 +29,7 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
   useEffect(() => {
     if (loading) return;
     if (!isAuth) {
-      dispatch(setAlert('Not authorized', 'error'));
+      // dispatch(setAlert('Not authorized', 'error'));
       setPermitted(false);
     } else if (roles && user && !roles.includes(user.role)) {
       dispatch(setAlert('You are not permitted to acces this paged', 'error'));
