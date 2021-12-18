@@ -57,7 +57,6 @@ export const mainSlice = createSlice({
             
         })
         .addMatcher(isRejectedAction, (state, action: AnyAction) => {
-            console.log('action ', action)
             const {payload} = action
             state.loading = false;
             if(payload){

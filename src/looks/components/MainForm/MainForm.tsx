@@ -102,7 +102,6 @@ const MainForm: FC<MainFormProps> = ({ look }) => {
   }, [updateSuccess, dispatch]);
 
   const onSubmit = (values: LookFormData) => {
-    console.log(values);
     const { hasImage, items, image, ...data } = values;
     const formData = new FormData();
     Object.entries(data).forEach(([key, val]) => {

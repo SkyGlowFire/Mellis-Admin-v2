@@ -1,9 +1,7 @@
 import { Components } from "@mui/material";
 import { IColorOptions } from ".";
 
-export default function componentStyleOverrides(theme: IColorOptions): Components {
-    console.log(theme);
-    
+export default function componentStyleOverrides(theme: IColorOptions): Components {   
     return {
         MuiButton: {
             styleOverrides: {
